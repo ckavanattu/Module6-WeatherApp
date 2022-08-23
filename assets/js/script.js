@@ -1,7 +1,10 @@
 var searchFormEl = document.getElementById("searchForm")
 var cityNameEl = document.getElementById("searchName")
 var currentDate = moment().format('dddd, MMMM Do YYYY')
-var forcast = document.getElementById("forcast")
+var forecast = document.getElementById("forecast")
+var lastCity = document.getElementById('pastSearch')
+var cityList = document.getElementById('city-list')
+var cities = []
 
 
 
@@ -16,11 +19,15 @@ var weatherAPI = function(event) {
         return response.json();
     })
     .then(function(data) {
-
-                var lat = data.coord.lat
+            
+            localStorage.setItem("City", city)
+            // console.log(city)
+            var lat = data.coord.lat
             var lon = data.coord.lon
-
+            
             citySearch(lat, lon, city)
+            pastSearch();
+            
     })
     .catch(function(){
         alert("please enter a valid city!")
@@ -39,7 +46,7 @@ var citySearch = function(a, b, c) {
         return response.json();
     })
     .then(function(data) {
-        console.dir(data)
+        // console.dir(data)
         var temp = data.current.temp
         var wind = data.current.wind_speed
         var humidity = data.current.humidity
@@ -47,7 +54,7 @@ var citySearch = function(a, b, c) {
         var img = data.current.weather[0].icon
 
         currentWeather(temp, wind, humidity, uv, img, c)
-        // futureWeather(data.daily, c)
+        futureWeather(data.daily, c)
 
     })
 }
@@ -80,38 +87,46 @@ var currentWeather = function(temp, wind, humidity, uv, img, city) {
         UvEl.classList.add("bg-danger")
      }
 
-    console.log(windEl)
+    //  console.dir(pastSearch)
+
+    
 }
 
 var futureWeather = function (data, city) {
     $(".card-deck").empty();
 
-    console.dir(data)
+    // console.dir(data)
 
     for (i=1; i<6; i++) {
          var temp = data[i].temp.day
          var humidity = data[i].humidity
          var wind = data[i].wind_speed
-         var Uv = data[i].uvi
          var currentDate = moment.unix(data[i].dt).format("ddd MMM Do")
          var weatherImage = data[i].weather[0].icon
 
+         var cards = document.getElementById("cards")
 
-         var weatherForcastContainer = document.createElement("div")
-         var weatherForcastDate = document.createElement("h1")
-         weatherForcastDate.innerText = ("forcast for " + currentDate)
-         var weatherForcastList = document.createElement("ul")
-         var tempEl = document.createElement('li')
-         tempEl.innerText = ("temp: " + temp + " F")
-         var humidityEl = document.createElement('li')
-         humidityEl.innerText= ("humidity: " + humidity + "%")
-         var windEl = document.createElement('li')
-         windEl.innerText=("Wind Speed: " + wind + "MPH")
-         var UvEl = document.createElement('li')
-         UvEl.innerText=("UV index: " + Uv )
-         weatherForcastList.append(tempEl, humidityEl, windEl, UvEl)
-         weatherForcastContainer.append(weatherForcastDate, weatherForcastList)
-         forcast.append(weatherForcastContainer)
+         var forcastContainer = document.createElement("div")
+         forcastContainer.classList = ('card text-white bg-primary p-2')
+         var tempEl = document.createElement('p')
+         var humEl = document.createElement('p')
+         var windEl = document.createElement('p')
+         var img = document.createElement('img')
+         var dateEl = document.createElement('h6')
+
+         img.setAttribute("src", "https://openweathermap.org/img/wn/" + weatherImage + "@2x.png")
+         tempEl.innerText = ("Temp: " + temp + " F")
+         humEl.innerText = ('Humidity: ' + humidity + " %")
+         dateEl.innerText = (currentDate)
+         windEl.innerText = ("Wind: " + wind + " MPH")
+
+         forcastContainer.append(dateEl)
+         forcastContainer.append(img)
+         forcastContainer.append(tempEl)
+         forcastContainer.append(humEl)
+         forcastContainer.append(windEl)
+         
+         cards.append(forcastContainer)
 
          
     }
@@ -119,6 +134,15 @@ var futureWeather = function (data, city) {
    
 
 
+}
+
+var pastSearch = function() {
+    var pastCity = localStorage.getItem("City")
+    console.log(pastCity)
+    lastCity.innerText=(pastCity)
+
+    lastCity.addEventListener('submit', weatherAPI)
+    
 }
 
 
