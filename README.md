@@ -10,3 +10,6 @@
 ## Link to Live URL
 https://ckavanattu.github.io/Module6-WeatherApp/
 
+## Sample Screenshot Below!
+![Sample Website](Image.png)
+
