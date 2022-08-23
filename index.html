@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Weather App</title>
+</head>
+<body>
+    <header class="jumbotron">
+        <h1 class="display-4 text-dark mx-auto" id="navbar">Weather App</h1>
+    </header>
+
+    <div class = "container-fluid">
+        <div class = "row mt-2">
+            <div class="col-4">
+                <div class="card bg-light p-2 mb-2">
+                    <h3> Enter a City Name Here </h3>
+                    <form class="form-inline" id="searchForm">
+                        <input type="search" class="form-control col-12 mr-2" placeholder="search" id="searchName">
+                        <button type="submit" class="btn btn-primary col-12 mt-2">Search</button>
+                    </form>
+                    <ul class="list-group mt-2 bg-light" id="pastSearch"></ul>
+                </div>
+            </div>
+            <div class="col-8">
+                <section id="current" class="card p-2" >
+                    <h2 id="cityName"></h2>
+                    <p id="temp"></p>
+                    <p id="wind"></p>
+                    <p id="humidity"></p>
+                    <p id="UV"></p>
+                </section>
+                <section id="forcast" class="mt-2 mb-2">
+                    <h3>5-Day Forecast:</h3>
+                    
+                    <div class="card-deck"></div>
+                  </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div> 
+        <h1 id="cityName"></h1>
+        <div id="cityDetails">
+            <ul>
+                <li id="temp"></li>
+                <li id="wind"></li>
+                <li id="humidity"></li>
+                <li id="UV"></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="forcast">
+
+    </div> -->
+    
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
