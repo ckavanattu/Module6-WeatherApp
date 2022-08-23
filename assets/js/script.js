@@ -4,7 +4,7 @@ var currentDate = moment().format('dddd, MMMM Do YYYY')
 var forecast = document.getElementById("forecast")
 var lastCity = document.getElementById('pastSearch')
 var cityList = document.getElementById('city-list')
-var cities = []
+var cities = JSON.parse(localStorage.getItem('cities') || '[]')
 
 
 
@@ -20,13 +20,41 @@ var weatherAPI = function(event) {
     })
     .then(function(data) {
             
-            localStorage.setItem("City", city)
-            // console.log(city)
+            cities.push(city)
+            localStorage.setItem("cities", JSON.stringify(cities));
             var lat = data.coord.lat
             var lon = data.coord.lon
             
             citySearch(lat, lon, city)
             pastSearch();
+            
+            
+    })
+    .catch(function(){
+        alert("please enter a valid city!")
+    })    
+    
+
+
+}
+
+var weatherAPI2 = function(city) {
+    
+     var queryUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&lang=en&appid=aec299195260a001b09706b5bfe740f7&units=imperial";
+
+    fetch(queryUrl)
+    .then(function(response){
+        return response.json();
+    })
+    .then(function(data) {
+            
+            cities.push(city)
+            localStorage.setItem("cities", JSON.stringify(cities));
+            var lat = data.coord.lat
+            var lon = data.coord.lon
+            
+            citySearch(lat, lon, city)
+            
             
     })
     .catch(function(){
@@ -55,6 +83,7 @@ var citySearch = function(a, b, c) {
 
         currentWeather(temp, wind, humidity, uv, img, c)
         futureWeather(data.daily, c)
+                     
 
     })
 }
@@ -81,7 +110,7 @@ var currentWeather = function(temp, wind, humidity, uv, img, city) {
     UvInt = parseInt(uv)
      if(UvInt <= 2) {
         UvEl.classList.add("bg-success")
-     } else if (UvInt >=3 && UvInt <= 5) {
+     } else if (UvInt >=3 && UvInt <= 6) {
         UvEl.classList.add("bg-warning")
      } else {
         UvEl.classList.add("bg-danger")
@@ -136,14 +165,38 @@ var futureWeather = function (data, city) {
 
 }
 
-var pastSearch = function() {
-    var pastCity = localStorage.getItem("City")
-    console.log(pastCity)
-    lastCity.innerText=(pastCity)
+var pastSearch = function() {    
 
-    lastCity.addEventListener('submit', weatherAPI)
+      
+
+    var citiesShortened= cities.slice(-1)
+    // console.log(citiesShortened)
+
+    for (var i=citiesShortened.length-1; i>=0; i--) {
+        
+        var historicSearch = document.createElement('button')
+        historicSearch.classList = "btn btn-primary col-12 mt-2"
+        historicSearch.setAttribute("type", "submit")
+        historicSearch.innerText=(citiesShortened[i])
+
+        cityList.prepend(historicSearch)
+
+
+    }
     
+}
+
+var searchAgain = function(event) {
+    
+    var cityNameHistoric = event.target.innerText
+    console.log(cityNameHistoric)
+
+    weatherAPI2(cityNameHistoric)
+    
+    
+
 }
 
 
 searchFormEl.addEventListener("submit", weatherAPI)
+lastCity.addEventListener("click", searchAgain)
